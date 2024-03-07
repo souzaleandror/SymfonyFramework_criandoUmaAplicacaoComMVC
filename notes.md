@@ -433,3 +433,246 @@ Efetivamente criamos nosso primeiro código usando Symfony. Aprendemos a usar a 
 Nesse controller criado magicamente pelo framework nós vimos como definir rotas. Utilizamos nesse vídeo a sintaxe de atributos do PHP para definir qual URL será acessada para executar o método em questão.
 Ao cometer um erro nós pudemos ver como o Symfony nos auxilia na investigação de erros através de uma página muito mais descritiva e informativa que a padrão do PHP.
 Também começamos a entender como o Symfony lida com requisição e resposta através do parâmetro Request recebido no controller e na Response retornada por ele.
+
+#### 07/03/2024
+
+@03-View
+
+@@01
+Projeto da aula anterior
+PRÓXIMA ATIVIDADE
+
+Você pode baixar os códigos que desenvolvemos até agora em zip neste link!
+
+https://github.com/alura-cursos/cursos-symfony/archive/refs/tags/aula-2.zip
+
+@@02
+Conhecendo o Twig
+
+Vamos continuar a conhecer nosso framework. Recapitulando, nós estamos utilizando a versão fullstack do Symfony. Um dos componentes presentes nessa versão serve para lidar com a camada de view. Em outras palavras, para exibir detalhes de visualização.
+Vamos remover do nosso código o Json que programamos na última aula, junto à expressão $html, e também o seu namespace:
+
+class SeriesController extends AbstractController
+{
+    #[Route('/series', name: 'app_series', methods: ['GET'])]
+    public function seriesList(): Response
+    {
+        $seriesList = [
+            'Lost',
+            'Grey's Anatomy',
+            'Loki',
+            'Suits',
+        ];
+
+        return $this->render( view: 'series/index.html.twig', [
+            'controller_name' => 'SeriesController',
+        ]);
+    }
+}COPIAR CÓDIGO
+Ao atualizar o navegador, vamos nos deparar novamente com o template inicial de criação de controller no Symfony.
+
+Mas de onde vem esse template? Quando criamos um controller pela linha de comando, ele adiciona automaticamente uma série de componentes não-obrigatórios. Por exemplo, o extends AbstractController, que vem do namespace Symfony\Bundle\FrameworkBundle\Controller\AbstractController;.
+
+Quando nós estendemos o AbstractController recebemos algumas funcionalidades extras. Uma delas é o método render, presente na linha 13 do nosso código. Quando executado, ele busca um arquivo de template do Twig, uma linguagem com sintaxe própria.
+
+Twig, no caso, é a linguagem que vamos utilizar para dar sequência ao treinamento. Para entendê-la melhor, vamos acessar https://symfony.com/doc/current/templates.html. Basta rolar a página para baixo que encontraremos as informações relacionadas a essa linguagem de template.
+
+Ela, além de ser uma linguagem, é também um componente que facilita a criação de arquivos HTML. Sua sintaxe é um pouco diferente. Dispensa, por exemplo, a criação de uma função echo, o que simplifica a codificação de arquivos de visualização. Para fazer isso, utilizamos a linha de código abaixo:
+
+<h1>{{ page_title }}</h1>COPIAR CÓDIGO
+Outro exemplo é o de execução de operadores lógicos, como if, for ou for it. Para executá-los no Twig, basta abrir chaves, inserir %, o que desejamos verificar e outro % antes de fechar as chaves, como no exemplo abaixo:
+
+            {% user.isLoggedIn %}COPIAR CÓDIGO
+De volta ao site do Symfony, encontramos os primeiros detalhes do Twig. Acessando https://twig.symfony.com, é possível ler, ainda, uma documentação à parte, porque o Twig pode ser utilizado, inclusive, em outros sistemas além do Symfony.
+
+Vamos voltar à nossa IDE para apresentar, enfim, de onde vem o template inicial de criação de controller no Symfony. Já sabemos que ele é buscado pelo método render, mas de onde ele vem?
+
+Embora isso seja configurável, ele vem, por padrão, do caminho "templates > series > index.html.twig". No caso, index.html.twig é o arquivo exibido pelo Symfony no navegador quando criamos um* controller.*
+
+Vamos abrir esse arquivo na IDE e editá-lo para exibir as séries da nossa lista.
+
+Nossa primeira alteração acontecerá na linha 12 do código: vamos editar o texto entre as chaves <h1> para Listagem de séries. Para exibir a lista de séries, vamos apagar os conteúdos listados entre tags <li> e criar um for, inserindo primeiro a variável do loop e, em seguida, o nome do array.
+
+Dentro do for, vamos adicionar a variável do loop entre chaves <li>. Nosso código ficará assim, a partir da linha 12:
+
+        <h1>Listagem de séries</h1>
+
+        <ul>
+            {% for series in seriesList %}
+                <li>{{ series }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endblock %}COPIAR CÓDIGO
+Agora vamos abrir o controller para entender como passamos informações para nosso arquivo Twig. A variável seriesList existe no controller, mas não na view. Por isso, quando tentamos executar o código, nos deparamos com o error handler *do *Symfony.
+
+Para resolver essa situação, precisamos fornecer um segundo parâmetro ao método render: no caso, as variáveis do contexto do nosso arquivo de visualização. Vamos passar seriesList, que tem o mesmo valor de $seriesList, na linha 14 do código:
+
+            'seriesList' => $serisList,COPIAR CÓDIGO
+Depois dessa alteração, já conseguiremos exibir a lista no navegador.
+
+A sintaxe do Twig pode ser diferente, mas é simples. Isso a torna mais acessível para equipes que contam com web designers, por exemplo, ou pessoas pouco familiarizadas com PHP de maneira geral.
+
+À medida que avançarmos, vamos conhecer mais funcionalidade interessantes do Twig. Lembre-se que você pode encontrar todas elas em https://twig.symfony.com.
+
+Na próxima aula, vamos entender o que são os blocos e o arquivo base.html.twig no nosso arquivo Twig.
+
+@@03
+Detalhes nas views
+PRÓXIMA ATIVIDADE
+
+Neste vídeo nós conhecemos o Twig e vimos como ele pode ser usado para criar views em um sistema que usa Symfony. Também aprendemos que podemos utilizar o método render de nosso controller para exibir nossas views, onde seu primeiro parâmetro é justamente o caminho do template a ser exibido.
+Qual é o segundo parâmetro do método render?
+
+
+Alternativa correta
+O contexto, ou seja, as variáveis que serão acessíveis no template.
+ 
+O segundo parâmetro é um array associativo, onde as chaves vão ser os nomes das variáveis criadas com seus respectivos valores em nossas views.
+Alternativa correta
+O contexto, ou seja, as variáveis que não serão acessíveis no template.
+ 
+Alternativa correta
+Uma variável que estará acessível no template.
+ 
+É possível ter diversas variáveis disponíveis no template.
+
+@@04
+Entendendo o layout
+
+Vamos continuar estudando o Twig, uma ferramenta completa que pode ser utilizada em projetos para além do Symfony.
+Podemos notar que dentro do arquivo index.html.twig há dois blocos: block title e block body. Eles estão relacionados ao conceito de layout do Twig. Os layouts do componentes podem ser utilizados em várias páginas, arquivos e views diferentes.
+
+A instalação padrão do Symfony já traz consigo um layout base, com estrutura HTML, meta tags, blocos, favicon e detalhes de front-end.
+
+Quando uma visualização estende o layout, ela pode definir os blocos que vão substituir os que estão presentes no código do arquivo Twig que estamos visualizando.
+
+Por padrão, o valor do block title, por exemplo, é Welcome!", que significa boas-vindas. Na view, é possível sobrescrevê-lo e alterar seu valor.
+
+Vamos alterar o block title do nosso arquivo Twig. Substituiremos Hello SeriesController! por Listagem de séries na terceira linha do código:
+
+{% block title %}Listagem de séries{% endblock %}COPIAR CÓDIGO
+Depois de fazer isso, quando atualizarmos o navegador, a barra de título da aba mostrará "Listagem de séries". Se acessarmos o código fonte da página com um "Ctrl + U" veremos o novo valor dentro da tag <title>.
+
+É possível sobrescrever um bloco assim como sobrescrevemos um método. Quando estendemos um template, é como se estivéssemos estendendo uma classe.
+
+Já em block body, inserimos todo o conteúdo do corpo do HTML. Então, se tivermos vários arquivos de visualização diferentes, podemos usar o mesmo HTML em todos eles, já com o cabeçalho head e outros padrões.
+
+No treinamento de MVC, separamos arquivos de cabeçalho e de rodapé. Já aqui, organizamos esses elementos em um único arquivo de layout.
+
+No próximo vídeo, vamos criar uma view com o formulário de cadastro de uma nova série. A partir disso, vamos discutir o funcionamento do nosso sistema.
+
+@@05
+Layouts e blocos
+PRÓXIMA ATIVIDADE
+
+Aprendemos neste vídeo que o Twig possui um conceito de blocos e que com esse conceito nós podemos ter layouts que serão estendidos por views específicas.
+Levando em consideração o conceito de layouts e blocos do Twig, qual afirmativa a seguir é verdadeira?
+
+Os blocos definidos em um layout podem ter um valor padrão.
+ 
+Todo bloco de um layout pode ter um valor padrão e esse valor pode ser sobrescrito em outras views que estendem esse layout. Caso a view que estende o layout não informe o bloco em questão, o valor padrão será utilizado. Mas nós podemos ter um bloco vazio sem problemas, ou seja, um bloco sem nenhum valor padrão.
+Alternativa correta
+Os blocos definidos em um layout devem ter um valor padrão.
+ 
+Alternativa correta
+Os blocos definidos em um layout devem ser sobrescritos pelas views que o estenderem.
+ 
+Os blocos podem ser omitidos pelas views que estendem um layout. Nesse caso, os valores padrão serão utilizados.
+
+@@06
+Mais funcionalidades
+
+No último vídeo, entendemos como o Twig e seus templates funcionam. Quando estamos no modo de desenvolvimento e utilizamos algum template do Twig, o Symfony adiciona automaticamente uma barra de profile no rodapé da página web. Se não utilizarmos o Twig, ela não aparecerá.
+Se apertarmos o "Ctrl + U" para acessar o código fonte da página, veremos que, em "Grey's Anatomy", onde deveria haver um apóstrofo, há um código HTML. Isso acontece porque, por padrão, quando utilizamos a sintaxe do Twig, o código chama as funções de limpeza que aprendemos no treinamento de String.
+
+Por isso, não precisamos nos preocupar em limpar nossa saída. O Twig faz isso por si só. Se alguém nos envia um conteúdo em HTML por formulário, por exemplo, podemos exibi-lo sem medo, porque o Twig cuidará da limpeza. Caso seja do nosso interesse que ele não o faça, podemos utilizar o filtro raw, adicionando-o à linha 16 do nosso código:
+
+            <li>{{ series|raw }}</li>COPIAR CÓDIGO
+Esse é um dos muitos filtros presentes no Twig. Depois de adicionar raw ao nosso código, podemos atualizar o navegador. Se apertarmos "Ctrl + U" agora, veremos que o apóstrofo está presente no código HTML.
+
+Vamos remover o filtro raw da linha 16 do código e criar um botão com link para adicionar o formulário de nova série. Vamos criar o link na linha 14 do nosso código e batizar a URL de /series/create. Vamos chamar o botão de Adicionar:
+
+<a href="/series/create">Adicionar</a>COPIAR CÓDIGO
+Ao atualizar o navegador, teremos o link acima da lista de séries. Apesar disso, o botão ainda não levará a endereço algum. Portanto, quando clicamos nele, nos deparamos com o error handler do Symfony. Chegou a hora de criar uma rota para o formulário.
+
+Vamos abrir o console e executar o comando php bin/console para vermos nossas opções. Na categoria make, vemos que não é possível criar outro controller, porque não queremos criar uma nova classe. O que desejamos é um novo método para o controller que já existe.
+
+O console não pode nos ajudar com isso, será preciso criar o código do novo método à mão. De volta ao controller de séries, vamos criar uma public function chamada addSeriesForm() e definir a rota, que será '/series/create' e só aceitará requisições do tipo 'GET'.
+
+Como queremos retornar a resposta já montada com um arquivo de view, também precisaremos adicionar a expressão $this->render() como retorno:
+
+    #[Route('/series/create', methods: ['GET'])]
+    public function addSeriesForm(): Response
+    {
+        return $this->render( view: 'series/form.html.twig');COPIAR CÓDIGO
+Porém, o arquivo series/form.html.twig não existe. Vamos criá-lo, portanto, com o auxílio da nossa IDE. O instrutor utiliza o PhpStorm, que monta o arquivo já com blocos de corpo e de título quando o usuário pressiona "Alt + Enter".
+
+Caso nossa IDE não conte com essa funcionalidade, basta abrir a pasta "series" e criar um novo arquivo, chamado form.html.twig. Depois, vamos abri-lo e usar a sintaxe {% extends %}, adicionando também o nome do arquivo.
+
+Depois de estender o template, precisamos sobrescrever os blocos. Vamos começar pelo bloco de body. Criaremos um formulário com o método post e um input, que receberá o nome da série. O nome e o ID do input serão name. Por fim, vamos adicionar uma label chamada Nome da série: ao input:
+
+    {% extends 'base.html.twig' %}
+
+    {% block body %}
+        <form method="post">
+            <label for="name">Nome da série:</label>
+            <input type="text" name="name" id="name">
+        </form>
+    {% endblock %}COPIAR CÓDIGO
+Quando atualizarmos a página, veremos que as alterações funcionaram.
+
+No futuro, vamos adicionar temporadas e episódios das séries. Mas, por enquanto, trabalharemos apenas com nomes de séries.
+
+Precisamos inserir, também, um botão de "Adicionar", algo que faremos com o código <button>Adicionar</button>. Nosso formulário ficará assim:
+
+    {% extends 'base.html.twig' %}
+
+    {% block body %}
+        <form method="post">
+            <label for="name">Nome da série:</label>
+            <input type="text" name="name" id="name">
+
+            <button>Adicionar</button>
+        </form>
+    {% endblock %}COPIAR CÓDIGO
+Esse botão serve para enviar o formulário, mas ainda não há rota definida para sua função. Por isso, se clicarmos nele, seremos redirecionados ao error handler do Symfony.
+
+Antes de criar a funcionalidade de adicionar uma série à lista, precisaremos melhorar o visual da aplicação.
+
+Na próxima aula, vamos conhecer o componente do Symfony voltado à área de front-end e trabalhar alguns detalhes da aparência da nossa lista de séries.
+
+@@07
+Para saber mais: XSS
+PRÓXIMA ATIVIDADE
+
+Um dos assuntos citados neste vídeo é XSS (Cross-site scripting), um tipo de ataque que pode executar um código malicioso em nosso site.
+Como foi citado, o Twig já nos protege disso, mas ainda assim é muito importante conhecer como esse ataque funciona.
+
+Neste vídeo, isso é mostrado com exemplos e como corrigir (sem uma template engine).
+
+@@08
+Faça como eu fiz
+PRÓXIMA ATIVIDADE
+
+Nessa aula nós começamos a separar melhor nosso código. O que é HTML foi para nossos templates então nós conhecemos um pouco sobre o Twig.
+Chegou a hora de você colocar em prática o que vimos neste capítulo e implementar também essas alterações em seu código.
+
+Caso tenha dúvidas, confira o andamento do seu projeto clicando na Opinião do Instrutor.
+
+No Controller de séries, passe a retornar a chamada do método render como originalmente foi criado pela linha de comando (return $this->render('series/index.html.twig', …));
+No template templates/series/index.html.twig altere o título para “Listagem de séries”. Garanta que isso se reflete ao acessar a rota /series.
+Utilizando um for do Twig nós vamos percorrer a lista de séries que criamos como um array.
+Para que esse for consiga acessar o array, em nosso controller nós precisamos adicionar esse array ao segundo parâmetro do método render.
+Agora no template de séries, adicione um link para um formulário de criação de séries. Esse formulário ainda não existe, então envie o usuário para a URL /series/create, por exemplo.
+Em nosso controller nós vamos agora definir essa rota. Para isso crie um método e adicione o atributo #[Route] a ele com os parâmetros necessários.
+Crie também um novo template para conter o formulário. Nesse template não se esqueça de estender o layout base.html.twig, definir o formulário dentro do bloco body do Twig e definir também um block title.
+
+@@09
+O que aprendemos?
+PRÓXIMA ATIVIDADE
+
+Nessa aula, nós:
+Finalmente chegamos na camada “V” do “MVC”. Nesse capítulo nós separamos o código que gerava um HTML para um template ao invés de deixar tudo no Controller.
+Nesse template nós conhecemos uma nova sintaxe, um novo mundo: Twig. Usando o Twig nós temos acesso a algumas facilidades para criar templates e vamos conhecê-las melhor ao longo dos treinamentos de Symfony.
+Uma das principais facilidades do Twig é a definição de um layout padrão. Nesse capítulo nós criamos uma estrutura base para todas as nossas páginas, diminuindo a repetição de código HTML em nosso sistema.
