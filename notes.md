@@ -9,6 +9,10 @@ composer require webapp
 php -S localhost:8080 -t public
 php bin/console     
 php bin/console make:controller OlaMundoController
+npm i
+npm install sass
+npm install sass-loader
+composer require symfony/webpack-encore-bundle`
 ```
 
 @01-Conhecendo o Symfony 
@@ -440,7 +444,6 @@ Também começamos a entender como o Symfony lida com requisição e resposta at
 
 @@01
 Projeto da aula anterior
-PRÓXIMA ATIVIDADE
 
 Você pode baixar os códigos que desenvolvemos até agora em zip neste link!
 
@@ -519,7 +522,6 @@ Na próxima aula, vamos entender o que são os blocos e o arquivo base.html.twig
 
 @@03
 Detalhes nas views
-PRÓXIMA ATIVIDADE
 
 Neste vídeo nós conhecemos o Twig e vimos como ele pode ser usado para criar views em um sistema que usa Symfony. Também aprendemos que podemos utilizar o método render de nosso controller para exibir nossas views, onde seu primeiro parâmetro é justamente o caminho do template a ser exibido.
 Qual é o segundo parâmetro do método render?
@@ -564,7 +566,6 @@ No próximo vídeo, vamos criar uma view com o formulário de cadastro de uma no
 
 @@05
 Layouts e blocos
-PRÓXIMA ATIVIDADE
 
 Aprendemos neste vídeo que o Twig possui um conceito de blocos e que com esse conceito nós podemos ter layouts que serão estendidos por views específicas.
 Levando em consideração o conceito de layouts e blocos do Twig, qual afirmativa a seguir é verdadeira?
@@ -644,7 +645,6 @@ Na próxima aula, vamos conhecer o componente do Symfony voltado à área de fro
 
 @@07
 Para saber mais: XSS
-PRÓXIMA ATIVIDADE
 
 Um dos assuntos citados neste vídeo é XSS (Cross-site scripting), um tipo de ataque que pode executar um código malicioso em nosso site.
 Como foi citado, o Twig já nos protege disso, mas ainda assim é muito importante conhecer como esse ataque funciona.
@@ -653,7 +653,6 @@ Neste vídeo, isso é mostrado com exemplos e como corrigir (sem uma template en
 
 @@08
 Faça como eu fiz
-PRÓXIMA ATIVIDADE
 
 Nessa aula nós começamos a separar melhor nosso código. O que é HTML foi para nossos templates então nós conhecemos um pouco sobre o Twig.
 Chegou a hora de você colocar em prática o que vimos neste capítulo e implementar também essas alterações em seu código.
@@ -670,9 +669,272 @@ Crie também um novo template para conter o formulário. Nesse template não se 
 
 @@09
 O que aprendemos?
-PRÓXIMA ATIVIDADE
 
 Nessa aula, nós:
 Finalmente chegamos na camada “V” do “MVC”. Nesse capítulo nós separamos o código que gerava um HTML para um template ao invés de deixar tudo no Controller.
 Nesse template nós conhecemos uma nova sintaxe, um novo mundo: Twig. Usando o Twig nós temos acesso a algumas facilidades para criar templates e vamos conhecê-las melhor ao longo dos treinamentos de Symfony.
 Uma das principais facilidades do Twig é a definição de um layout padrão. Nesse capítulo nós criamos uma estrutura base para todas as nossas páginas, diminuindo a repetição de código HTML em nosso sistema.
+
+#### 08/03/2024
+
+@04-Symfony Encore
+
+@@01
+Projeto da aula anterior
+
+Você pode baixar os códigos que desenvolvemos até agora em zip neste link!
+
+https://github.com/alura-cursos/cursos-symfony/archive/refs/tags/aula-3.zip
+
+@@02
+Entendendo o conceito
+
+Agora que já criamos duas views e sabemos utilizar o template, vamos falar mais um pouco sobre front-end.
+A interface da nossa lista de séries está muito simples. Nas palavras do instrutor, ela está feia. Vamos usar o Bootstrap, um componente de front-end, para estilizá-la. Mas o que aprenderemos hoje pode ser executado com qualquer ferramenta semelhante.
+
+Vamos acessar https://getbootstrap.com/docs/5.2/getting-started/download/ para fazer o download do Bootstrap. Poderíamos baixar o CSS e o JavaScript já compilados, mas precisaríamos repetir esse processo sempre que houvesse uma atualização no Bootstrap.
+
+Para evitar esse incômodo, vamos utilizar um gerenciador de dependência. Vamos utilizar o npm, mas poderíamos escolher o yarn ou outros gerenciadores de dependência do front-end. Dessa forma, vamos ter o projeto do Bootstrap na pasta "node modules", que tem função semelhante à "vendor" do PHP.
+
+A partir dela, precisaremos acessar os arquivos e trazê-los para o nosso projeto. Normalmente isso é feito através de um processo de front-end complexo, que pode ser automatizado com a ajuda de um webpack ou outros tipos de bundler.
+
+Quando trabalhamos com frameworks de front-end, como Angular ou React, eles configuram o webpack automaticamente. Apesar disso, existe sempre a possibilidade de gerenciarmos nós mesmos o empacotador de código.
+
+Porém, precisamos ter em mente que essa não é uma tarefa simples. Para termos noção, apenas para importarmos os estilos do Bootstrap, precisaríamos adicionar um arquivo de configuração imenso à nossa aplicação.
+
+Agora, vamos dar uma olhada em https://symfony.com/doc/current/frontend.html para entender porque front-end é importante em um treinamento de Symfony. A ferramenta possui um componente chamado* Encore, que atua como facilitador para tabalharmos com *webpacks.
+
+Ele traz uma configuração facilitada para instalarmos o empacotador de código.
+
+A documentação explica como podemos utilizar o Encore e nos aponta o caminho para sua instalação. Porém, como instalamos a versão completa do Symfony no início do treinamento, esse componente já está presente nas nossas máquinas.
+
+Só precisaremos, então, instalar a parte de front-end. Para isso, vamos precisar ter o yarn ou o npm *instalados. No treinamento, utilizaremos *npm. Antes de instalá-lo, porém, vamos baixar o Node.js em https://nodejs.org.
+
+Obs: Quando for instalar o Node.js, escolha versões pares ou classificadas como Long Term Support (LTS). Elas tendem a ser mais estáveis.
+Vamos abrir o console do projeto e executar o comando npm install. Isso será suficiente para instalar todas as dependências de front-end do nosso webpack, o Encore.
+
+No próximo vídeo, vamos instalar o Bootstrap e configurá-lo de maneira simplificada com a ajuda de um componente Symfony *no *front-end.
+
+https://getbootstrap.com/docs/5.2/getting-started/download/
+
+https://symfony.com/doc/current/frontend.html
+
+@@03
+Para saber mais: Node
+
+Para realizar a instalação do Node em sua máquina, você pode seguir as instruções deste link.
+Prefira as versões pares, pois são mais “estáveis”. ;-)
+
+https://nodejs.org/en/
+
+@@04
+Instalação do Encore
+
+Atualmente o pacote webapp que instalamos no início do treinamento não traz mais o Encore por padrão. Sendo assim, para utilizá-lo, basta executar o seguinte comando:
+composer require symfony/webpack-encore-bundle
+
+@@05
+Instalando o Bootstrap
+
+Agora já estamos com o Enconre instalado, mas antes de manipulá-lo no nosso projeto, vamos lembrar que ele também pode ser utilizado em projetos que não são do Symfony.
+Como o Enconre é uma dependência de front-end, podemos intalar apenas a parte relacionada a isso na página de documentação oficial do Symfony. Para começar, vamos instalar o Bootstrap e salvá-lo como uma dependência de desenvolvimento executando o código npm install bootstrap --save-dev no terminal.
+
+Vamos acessar "node_modules > bootstrap > scss". SCSS é um pré-processador de CSS. Basicamente, é uma forma de escrever na linguagem de estilo com algumas funções a mais na sintaxe. Precisamos, então, transformar esse SCSS em CSS, para que o navegador possa compreendê-lo.
+
+Por isso, pode ser necessário copiar o código de configuração de webpack em https://getbootstrap.com/docs/5.2/getting-started/webpack/, mas esse não será o nosso caso, porque vamos usar o Encore. Vamos executar o arquivo webpack.config.js, na pasta "vendor", para configurar o webpack.
+
+Primeiros, vamos selecionar o destino dos arquivos processados. No caso do nosso código, manteremos o padrão: eles serão processados e enviados para a pasta "public/build".
+
+O caminho buscado quando tentarmos encontrar o arquivo será /build, porque o public já é acessível pela URL. Logo entenderemos melhor a necessidade dessa linha.
+
+Vamos excluir tudo entre as linhas 14 e 41 do código. Vamos fazer isso porque, por padrão,o Symfony traz um framework JavaScript para lidarmos com essa linguagem de programação, como um React simplificado.
+
+Depois disso, também vamos apagar o código entre as linhas 18 e 29. Por fim, apagaremos todas as linhas abaixo de enableSassLoader() até //.autoProvidejQuery(), que será a última a ser deletada.
+
+Ainda não estamos buscando nenhum arquivo de estilo. Vamos voltar ao site do Bootstrap para importá-lo. É possível importar um arquivo de custom para modificar as variáveis, mas nós queremos utilizar o Bootstrap padrão.
+
+Para isso, vamos acessar "assets > styles > app.css". Vamos abrir o arquivo "app.css" e adicionar a linha de código @import "~bootstrap/scss/bootstrap"; a ele. Vamos renomear o arquivo para "app.scss".
+
+A pasta "assets" tem os detalhes do framework do Symfony que criamos anteriormente. Para que não nos confundamos, vamos apagar a pasta "controllers" e os demais arquivos da pasta "styles". Deixaremos apenas o arquivo que renomeamos agora há pouco.
+
+Esse arquivo está importando o Bootstrap. Agora, precisamos transformá-lo em CSS e movê-lo para a pasta "public > build". Vamos configurar o webpack para que ele possa fazer isso. A parte de buildjá está feita, cuidando da otimização e limpeza do* output*.
+
+Agora precisamos adicionar uma entrada de estilo, inserindo .addStyleEntry() à linha 19 do nosso código. Vamos adicionar, também, os parâmetros 'style' e './assets/styles/app.scss':
+
+.addStyleEntry( name:'style', src:'./assets/styles/app.scss');COPIAR CÓDIGO
+Isso é tudo que precisamos para configurar o webpack. O arquivo já veio com configurações padrão, o que fez dele mais complexo.
+
+Chegou a hora de executar o arquivo package.json, que fica dentro da pasta "vendor". Nele, encontramos nossas dependências, que são o Bootstrap e o Encore. Lá, também localizamos o framework do Symfony. Há, também, scripts, como o dev, que é responsável por rodar o Encore.
+
+Vamos abrir o console e inserir o comando npm run dev, para executá-lo. Depois disso, seremos informados sobre a necessidade de instalar o sass-loader e o sass. Além disso, ele informará os comandos que precisamos rodar.
+
+Isso será necessário porque, na configuração, habilitamos o* Sass Loader* com o comando .enableSassLoader(). Vamos fazer isso inserindo npm install sass-loader@^12.0.0 sass --save-dev no nosso console.
+
+Depois disso, a dependência será instalada e poderemos rodar o Run dev. Agora, vamos habilitar a configuração Encore.disableSingleRuntimeChunk(). De volta à "public > build", encontraremos novos elementos, mas o único que nos será útil é o arquivo "style.css".
+
+Agora, o arquivo "style.css" abriga o Bootstrap. Agora vamos acessar "templates > series > base.html.twig". Nesse arquivo, vamos adicionar o layout à linha 7 do código:
+
+<link rel="stylesheet" href="/build/style.css">COPIAR CÓDIGO
+Agora vamos atualizar a página no navegador para visualizar nossas alterações. Ao fazer isso, podemos notar uma leve variação na fonte e no botão, o que significa que o Bootstrap foi efetivamente carregado.
+
+Agora vamos aprender a utilizá-lo. No próximo vídeo, iremos um pouco além do Symfony, estilizando, de maneira básica, nosso projeto.
+
+https://symfony.com/doc/current/frontend/encore/installation/.html#installing-encore-in-non-symfony-applications
+
+https://getbootstrap.com/docs/5.2/getting-started/webpack/
+
+@@06
+Sobre o Encore
+
+Neste vídeo, nós entendemos o conceito por trás do Symfony Encore.
+Qual das alternativas a seguir sobre o Symfony Encore é verdadeira?
+
+Selecione uma alternativa
+
+Apesar de ser criado pela equipe do Symfony, é um pacote JavaScript.
+ 
+O Symfony Encore é um pacote disponível inclusive para projetos que não utilizam Symfony ou nem mesmo PHP. A ideia dele é simplificar a configuração do Webpack, que é uma ferramenta JavaScript.
+Alternativa correta
+O Encore usa PHP para gerar a configuração do Webpack.
+ 
+Apesar de ser criado pela equipe do Symfony, é um pacote JS.
+Alternativa correta
+Só é possível utilizar o Symfony Encore em projetos Symfony.
+ 
+O pacote Symfony Encore é completamente independente do framework Symfony, até porque ele não é um componente PHP e sim um pacote JS.
+
+@@07
+Estilizando as views
+
+Nós conhecemos o Symfony Encore, que facilita a configuração do webpack, uma ferramenta de front-end.
+Agora vamos usar o Bootstrap para modificar a lista nos nossos templates. Precisamos acessar "templates > base.html.twig". Na linha 7, vamos substituir /build/style.css pela função {{ asset('build/style.css1) }}.
+
+Quando executamos essa função do Twig, ela busca o caminho correto de public, que pode estar num lugar diferente, de acordo com o subdomínio. Se estivéssemos em http://localhost8123/seris/create e quiséssemos acessar o build, a função {{ asset('/series/create/build/style.css') }} não funcionaria.
+
+Também poderíamos trocar os assets de domínio e, por isso, utilizamos a função asset. De volta ao arquivo base.html.twig, vamos modificá-lo. Queremos utilizar o título na <title> e logo antes do block body. O código ficará assim:
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{{ block('title') }}</title>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 vie (código incompleto)
+        <link rel="stylesheet" href="{{ asset('build/style.css') }}">
+
+        {% block stylesheets %}
+            {{ encore_entry_link_tags('app') }}
+        {% endblock %}
+
+        {%block javascripts %}
+            {{ encore_entry_script_tags('app') }}
+        {% endblock %}
+    </head>
+    <body>
+        <h1>{{ block('title') }}</h1>
+        {% block body %}{% endblock %}
+    </body>
+</html>COPIAR CÓDIGO
+Atualizando o navegador, veremos o título "Listagem de séries" duplicado. Vamos voltar ao arquivo index.html.twig e remover o conteúdo da linha 12, <h1>Listagem de séries</h1>, porque ele já foi definido como title na linha 3.
+
+Também vamos apagar as tags de <style>, entre as linhas 6 e 9, criadas automaticamente pelo Symfony. Além desses elementos, também removeremos a <div> padrão. Agora, vamos transformar a lista <ul> em um list-groupe cada um dos itens <li> em um list-group-item:
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Listagem de séries{% endblock %}
+
+{% block body %}
+<a href="/series/create">Adicionar</a>
+
+<ul class="list-group">
+    {% for series in seriesList %}
+        <li class="list-group-item">{{ series }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}COPIAR CÓDIGO
+Quando atualizarmos o navegador, veremos o estilo de lista do Bootstrap. Depois disso, vamos envolver todos os elementos do layout em um container, para que a disposição das séries diminua um pouco e se localize ao centro da tela, abrindo um <div> com essa classe no <body> do arquivo base.html.twig:
+
+<body>
+<div class="container">
+    <h1>{{ block('title') }}</h1>
+    {% block body %}{% endblock %}
+</div>
+</body>COPIAR CÓDIGO
+Agora, de volta ao arquivo index.html.twig, vamos estilizar o botão "Adicionar". Para fazer isso, adicionaremos a classe btn btn-dark ao link, na linha 6 do código, além de uma margem mg-3:
+
+<a href="/series/create" class="btn btn-dark mb-3">Adicionar</a>COPIAR CÓDIGO
+Agora, já estilizamos a lista de séries. Apesar disso, se clicarmos em "Adicionar", vamos nos deparar com o error handler do Symfony, porque o block title não existe. Vamos defini-lo no arquivo form.html.twig, na linha 3 do código:
+
+{% block title %}Nova Série{% endblock %}COPIAR CÓDIGO
+Agora, para estilizar o formulário, vamos envolver o controle em uma <div>, adicionar a classe form-label à tag <label> e a classe form-control ao <input>. Em <button>, vamos adicionar o estilo btn btn-dark:
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Nova Séries{% endblock %}
+
+{% block body %}
+    <form method="post">
+        <div> class="mb-3">
+            <label for="name" class="form-label">Nome da série:</label>
+            <input type="text" name="name" class="form-control">
+        </div>
+
+        <button class="btn btn-dark">Adicionar</button>
+    </form>
+{% endblock %}COPIAR CÓDIGO
+Depois, o formulário de nova série também estará estilizado.
+
+Apesar disso, os dados que nós criamos são falsos. Em outras palavras, as séries da lista foram criadas manualmente e inseridas no array. O que nós queremos é um banco de dados.
+
+Quando adicionarmos novas séries, queremos que elas sejam salvas no banco de dados. E, por fim, queremos buscar as séries no banco de dados quando formos exibi-las.
+
+Na próxima aula, vamos descobrir como o Symfony facilita o nosso acesso a bancos de dados.
+
+http://localhost8123/seris/create
+
+@@08
+Função asset
+
+Neste vídeo nós utilizamos uma função que o Symfony nos fornece chamada asset.
+Qual o propósito da função asset?
+
+Nos retornar o caminho de um asset (arquivo estático) com uma barra (/) na frente.
+ 
+Não é só isso que a função asset pode fazer.
+Alternativa correta
+Nos retornar o caminho de um asset (arquivo estático) que está na pasta public.
+ 
+Nem sempre o arquivo estará na pasta public.
+Alternativa correta
+Nos retornar o caminho de um asset (arquivo estático), que pode inclusive estar em outro domínio.
+ 
+Em nosso projeto, todos os assets estão no local padrão, que é a pasta public. Mas em projetos mais complexos, nós podemos configurar um projeto separado para ter nossos assets, usando CDN, por exemplo. Com isso, a função asset verifica se há essa configuração e já busca o domínio correto.
+
+@@09
+Faça como eu fiz
+
+Nessa aula nós saímos do mundo PHP e fomos para o front-end. Conhecemos sobre Webpack, Bootstrap e o principal: Symfony Encore.
+Chegou a hora de você colocar em prática o que vimos neste capítulo e implementar também essas alterações em seu código.
+
+Caso tenha dúvidas, confira o andamento do seu projeto clicando na Opinião do Instrutor.
+
+Na pasta do projeto, execute npm install. Isso instalará as dependências de front-end, o que inclui o Symfony Encore. Para instalar o bootstrap, execute npm install bootstrap@5.2.0 –save-dev.
+Abra o arquivo webpack.config.js. Nele você vai descomentar a linha enableSassLoader(). Vamos limpar um pouco esse arquivo. Remova todos os comentários e as linhas .addEntry('app’, './assets/app.js'), .enableStimulusBridge(...), .splitEntryChunks(), .enableVersioning e relacionado a “Babel”.
+Agora o Encore já está configurado. Vamos, então, passar a usar o Bootstrap. Para isso, renomeie o arquivo assets/styles/app.css para ele ter a extensão scss. Agora nesse arquivo apague todo o conteúdo e deixe apenas @import "~bootstrap/scss/bootstrap"’;.
+De volta ao arquivo webpack.config.js, após a linha .enableSassLoader() adicione uma entrada de estilo com .addStyleEntry('style', './assets/styles/app.scss').
+Com tudo configurado, execute na linha de comando npm run dev para rodar o Encore. Na primeira vez ele vai informar que há dependências para instalar. Instale-as e rode o comando novamente. Com isso você terá uma pasta public/build onde estará o arquivo style.css com todo o bootstrap lá.
+No template com nosso layout base, adicione a tag link importando esse CSS: <link rel="stylesheet" href="{{ asset('build/style/css') }}" />.
+Agora vamos editar o HTML. No layout base, adicione um h1 tendo como conteúdo {{ block('title') }} para exibir o título da página. Não se esqueça de remover o h1 do template de séries. Envolva tanto o h1 quanto o bloco body em uma div com a classe container.
+Remova os estilos adicionados por padrão pelo Symfony nesse template (apague toda a tag style). Remova também a div que envolve o conteúdo da página.
+Agora adicione à tag ul a classe list-group e à tag li a classe list-group-item.
+Por fim, adicione ao botão de “Adicionar” as classes btn btn-dark mb-3.
+No template do formulário, adicione o bloco title com o tíulo “Nova série”.
+Para estilizar o formulário, envolva a label e o input em uma div com classe mb-3, adicione a classe form-label à label e a classe form-control ao input, além das classes btn btn-dark mb-3 ao botão.
+
+@@10
+O que aprendemos?
+
+Nessa aula, nós:
+Vimos como gerenciar uma build pipeline no front-end pode ser trabalhoso. Embora o treinamento seja sobre Symfony, é bastante comum o cargo de dev fullstack, sendo assim, conhecer como o framework nos ajuda no front-end é essencial.
+Para auxiliar na criação de uma build pipeline profissional é muito comum utilizar uma ferramenta chamada Webpack. Nessa aula nós entendemos um pouco o propósito desse componente JavaScript.
+Para facilitar o uso do Webpack o Symfony fornece um componente chamado Encore. Com essa biblioteca nós podemos realizar configurações de forma muito mais simples.
+Aproveitando a simplicidade do Encore nós configuramos o Bootstrap. Com esse framework CSS em nosso projeto será possível criar um sistema minimamente apresentável sem pensar muito em como estilizar.
