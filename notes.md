@@ -12,7 +12,9 @@ php bin/console make:controller OlaMundoController
 npm i
 npm install sass
 npm install sass-loader
-composer require symfony/webpack-encore-bundle`
+composer require symfony/webpack-encore-bundle
+brew services restart php 
+/usr/local/etc/php/8.3/php.ini
 ```
 
 @01-Conhecendo o Symfony 
@@ -938,3 +940,326 @@ Vimos como gerenciar uma build pipeline no front-end pode ser trabalhoso. Embora
 Para auxiliar na criação de uma build pipeline profissional é muito comum utilizar uma ferramenta chamada Webpack. Nessa aula nós entendemos um pouco o propósito desse componente JavaScript.
 Para facilitar o uso do Webpack o Symfony fornece um componente chamado Encore. Com essa biblioteca nós podemos realizar configurações de forma muito mais simples.
 Aproveitando a simplicidade do Encore nós configuramos o Bootstrap. Com esse framework CSS em nosso projeto será possível criar um sistema minimamente apresentável sem pensar muito em como estilizar.
+
+#### 12/03/2024
+
+@05-Camada Model
+
+@@01
+Projeto da aula anterior
+
+Você pode baixar os códigos que desenvolvemos até agora em zip neste link!
+
+https://github.com/alura-cursos/cursos-symfony/archive/refs/tags/aula-4.zip
+
+@@02
+Entidades
+
+Como estamos trabalhando com o Symfony, que é uma aplicação MVC, primeiro aprendemos sobre a ferramenta e o que são frameworks, controller, view e alguns aspectos de front-end. Agora vamos falar sobre a camada de model, que envolve regras de negócios e persistência, por exemplo.
+Vamos aprender, então, a armazenar informações em bancos de dados. Precisamos criar uma forma de representar as séries no nosso banco de dados. Um dos pré-requisitos para esse treinamento é ter concluído o curso de Doctrine, porque ele é a ferramenta para acesso a banco de dados (ORM) padrão do Symfony.
+
+Sua função é mapear os objetos para o mundo relacional. Vamos criar uma classe no nosso projeto e, com ela, geraremos objetos que serão mapeados pelo Doctrine para o banco de dados. Poderíamos acessar a pasta "Entity" para fazer isso, já que ela é a pasta padrão para criação de entidades no Symfony.
+
+Porém, vamos criar nossas entidades pela linha de comando, abrindo o console para executar php bin/console make:entity. Vamos adicionar também o nome da entidade, que será Series ("série" em inglês"):
+
+php bin/console make:entity SeriesCOPIAR CÓDIGO
+Quando executamos o código, a série é criada já com um ID. Apesar disso, o console exige que demos um nome à propridade. Nesse momento, informaremos que vamos armazená-la em name, que será uma string, e responderemos no para evitar que ele seja nulo no banco de dados.
+
+Depois de fazer isso, a entidade já estará atualizada com o name. Também é possível adicionar mais propriedades nessa etapa, mas nós não queremos fazer isso. Vamos dar "enter" para finalizar o processo e, em seguida, minimizar o terminal.
+
+Agora vamos dar uma olhada no nosso código e discutir o que aconteceu. O Doctrine já está configurado com o Symfony, que tem também um outro pacote, chamado Maker, responsável por criar código. Ele foi utilizado quando criamos o controller e geramos nossas views. Essa entidade já vem mapeada automaticamente e com um repositório no padrão do Doctrine.
+
+A única diferença entre este mapeamento e o feito no treinamento do Doctrine é que o Symfony importa o namespace de mapeamento com o alias (pseudônimo) ORM. Isso serve para deixar a relação de pertencimento entre Entity e namespace de ORM mais explícita.
+
+Além disso, o mapeamento não adicinou o tipo às propriedades. Vamos modificar a primeira propriedade para um inteiro, adicionando int a ela, e a segunda para uma string. Depois de fazer isso, podemos remover type: 'integer' de #[ORM\Column. Como o length, por padrão, já é 255, também podemos removê-lo da linha 16. Entre class Series e public function, nosso código estará assim:
+
+class series
+{
+
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private int $id;
+
+    #[ORM\Column]
+    private string $name;
+
+    public function getId(): ?int
+    {COPIAR CÓDIGO
+O Symfony também define getters e setters automaticamente. Teoricamente, um setter não nos interessaria, porque, na nossa lista, uma série não poderia ter seu nome alterado depois de adicionada. Apesar disso, como estamos praticando, não vamos remover essa configuração, para que, no futuro, seja possível fazer alterações.
+
+Vamos criar a public function`__constructe inserir a *string*$nameda propriedadecolumn` nela:
+
+    public function __construct(
+        #[ORM\Column]
+        private string $name
+    )COPIAR CÓDIGO
+Dessa forma, já declaramos, recebemos e inicializamos a propriedade com uma só instrução. Assim, definimos a classe series. Reparemos que não foi criado nenhum setter para o ID, porque ele já foi definido como "gerado automaticamente" pelo banco de dados, como aprendemos no treinamento de Doctrine.
+
+Agora, teoricamente, a entidade já está pronta para utilização. Vamos, então, dar uma olhada no nosso repositório, sobre o qual também aprendemos no treinamento de Doctrine. O repositório apresenta alguns métodos de exemplo para a criação de queries mais complexas.
+
+Dois deles já estão, inclusive, implementados: uma public function add(), com a função de adicionar, e uma public function remove(), para remover. Esses métodos usam o getEntityManager e, por padrão, fazem o flush quando passamos o segundo parâmetro como true.
+
+Caso o definamos como false, poderemos adicionar outras entidades e, só quando desejarmos, fazer o flush. Vamos manter, portanto, o código padrão.
+
+A classe SeriesRepository está estendendo outro repositório, ServiceEntityRepository, relacionado ao DoctrineBundle. Portanto, a integração do Doctrine com o Symfony fornece essa outra classe, para que o Symfony consiga criar o repositório quando necessário.
+
+Por fim, o console nos apresentará a possibilidade de criar uma migration com o comando php bin/console make:migration.
+
+No próximo vídeo, vamos recapitular o conceito de migration.
+
+@@03
+Configurações
+
+Vamos revisar o conceito de migration e entender o porquê de estender essa classe. Antes disso, porém, precisaremos configurar algumas coisas para definir a qual banco de dados o repositório e a entidade se conectarão.
+Precisaremos conferir o mapeamento, que já está configurado, e verificar o que já existe no banco de dados. Vamos abrir a pasta "config" e fechar as outras que estiverem abertas, para que não nos confundamos. Vamos fechar, também, todos os arquivos que abertos.
+
+Na pasta "config", temos todos os arquivos de configuração do Symfony. Eles podem estar em três formatos: xml, yaml e php. Por padrão, as configuração vêm em yaml, mas é possível modificá-las para PHP. Para isso, podemos recriar o arquivo com o mesmo nome, mas alterando a extensão de yaml para php. Apesar disso, vamos ignorar essa possibilidade e manter a extensão yaml.
+
+Dentro da pasta, encontramos alguns arquivos, como o routes.yaml, que representa a rota definida no controller. Nele, vemos que os controllers serão encontrados na pasta ../src/Controller/ e que as rotas são configuradas através de attributes no próprio deles.
+
+Já o arquivo services.yaml é utilizado pelo Symfony para saber como criar cada classe executada por nós. Agora, vamos para "config > packages", que abriga os arquivos de configuração de todos os pacotes a mais utilizados no nosso framework. Como debug.yaml, por exemplo, no qual definimos onde acontece o dump. Para enviar e-mails, temos mailer.yaml. E, para acessar o banco de dados, temos doctrine.yaml.
+
+Ele é o arquivo de configuração para o Doctrine, onde definimos os dados de conexão da camada de abstração e detalhes de criação de nomes e mapeamento do ORM. Temos também doctrine_migrations.yaml, que abriga configurações específicas das migrations, como seu local de armazenamento, namespace e utilização ou não do profiler, como na debug bar do navegador, para ver mais detalhes.
+
+Conseguimos, portanto, passar informações específicas para o componente de migrations. Em doctrine.yaml, ORM e componente de migrations já estão configurados. Só precisamos, agora, definir a conexão com o banco de dados.
+
+A URL do banco de dados url: '%env(resolve:DATABASE_URL)%' é responsável por buscar uma variável de ambientes que, no caso, é DATABASE_URL. Agora, precisamos defini-la. Poderíamos fazer isso executando o terminal, onde iniciamos o servidor, e inserir o comando DATABASE_URL para, em seguida, adicionar o valor da URL.
+
+Porém, vamos definir a variável usando arquivos .env, já que estamos em um ambiente de desenvolvimento e temos essa ferramenta à nossa disposição. Nela, todos os arquivos definidos por nós, como APP_ENV, APP_SECRET e MESSENGER_TRANSPORTE_DSN, por exemplo, serão lidos como variáveis de ambiente.
+
+Apesar disso, não podemos inserir informações que não podem ser comitadas nesse tipo de arquivo, como usuário e senha. Uma alternativa para usar dados com credenciais é criar um arquivo .env.local, seguindo os passos ensinados pelo próprio Symfony no arquivo .enmv. Dessa forma, as informações serão sobrescritas, mas não comitadas. Em outras palavras, não serão adicionadas ao nosso Git.
+
+Vamos criar o arquivo .env.locale adicionar DATABASE_URL="sqlite:///%kernel.project.dir%/var/data.db". Assim, utilizamos sqlite como driver. Para isso, lógico, precisamos ter essa extensão habilitada.
+
+O valor %kernel.project.dir% é responsável por encontrar e acessar a pasta do nosso projeto. Com apenas uma linha de comando, já conseguimos configurar o banco de dados.
+
+Também é possível fazer a configuração com MySQL: basta copiar o comando presente no arquivo .env. Vamos utilizar o SQLite para que não precisemos instalar nenhum servidor.
+
+Com isso, o banco de dados estará configurado e poderá ser testado no terminal. Nele, vamos inserir php bin/console para encontrar os comandos do Doctrine. Vamos tentar rodar o comando doctrine:database:create para ver o que acontece:
+
+php bin/console doctrine:database:createCOPIAR CÓDIGO
+Executando isso, criaremos o arquivo "data.db" na pasta "var", que ainda estará vazio. Na próxima aula, portanto, vamos aprender a criar migrations e a executá-las.
+
+@@04
+Variáveis de ambiente
+
+Neste vídeo, nós entendemos como funcionam as configurações do Symfony e vimos que variáveis de ambiente podem ser usadas para que nós não tenhamos informações sensíveis em nosso código.
+Por que não devemos ter informações sensíveis (como credenciais) em nosso código? Selecione duas alternativas verdadeiras.
+
+Pois isso pode expor nossa segurança.
+ 
+Nosso código versionado pode ser visto por outras pessoas. Se as senhas estiverem lá, essas pessoas terão acesso a elas.
+Alternativa correta
+Pois a leitura de variáveis de ambiente deixa o código mais rápido.
+ 
+Alternativa correta
+Porque ter credenciais diretamente em nosso código torna o código mais seguro.
+ 
+Alternativa correta
+Porque podemos ter credenciais diferentes em ambientes diferentes.
+ 
+No meu ambiente local, eu estou usando SQLite. Em ambiente de produção eu poderia utilizar PostgreSQL, então as configurações de conexão seriam outras. Com variáveis de ambiente, cada um dos meus ambientes terá suas configurações separadas, permitindo o uso de diferentes serviços, por exemplo.
+
+@@05
+Migrations
+
+Já entendemos que o Symfony utiliza o Doctrine como ORM, fomos apresentados ao formato de configurações do Doctrine e às variáveis de ambiente, conhecidas como arquivos .env.
+Não vimos isso na última na aula, mas é possível criar vários arquivos .env. O .env.local, por exemplo, só existirá na nossa máquina. Portanto, no .env, deixamos sempre exemplos de dados para ajudar outros desenvolvedores. No nosso caso, poderíamos deixar apenas um DATABASE_URL.
+
+Em ambientes de produção, arquivos .env não serão sempre utilizados. Na AWS, por exemplo, poderíamos utilizar o Secrets Manager, ou, no Github Actions, os Github Secrets. Cada ambiente fornece, então, uma forma de manter valores sensíveis em segurança.
+
+Podemos ter variáveis de ambiente, quando temos um servidor gerenciado manualmente, ou utilizar ferramentas dos ambientes de deploy. No ambiente local, os arquivos .env são a melhor forma de definir variáveis de ambiente.
+
+Chegou a hora de trabalharmos com as migrations. Vamos abrir nosso terminal e executar o comando php bin/console e, em seguida, make:migration:
+
+php bin/console make:migrationCOPIAR CÓDIGO
+Ao executar isso, criaremos uma nova classe migration e, para que a rodemos, basta copiar o código php bin/console doctrine:migrations:migrate, apresentado no console.
+
+Antes de fazer isso, porém, vamos dar uma olhada na* migration* gerada. Vamos acessar "migrations > Version20220611214125.php". Nesse arquivo, veremos que uma tabela chamada "series" foi criada. Além disso, outra tabela, chamada "messenger_messages", foi adicionada ao arquivo.
+
+Apesar disso servir para trabalharmos com alguns eventos assíncronos, não vamos usar essas funções agora. Porém, no futuro, em outros treinamentos sobre Symfony, vamos chegar utilizar isso. Por este motivo, não excluiremos essas linhas do código.
+
+Vamos focar, então, na nossa tabela de "series". Nela, há a criação do ID, com um AUTOINCREMENT, ou seja, gerado pelos banco de dados. Há também o name, um campo de texto VARCAR que não é nulo:
+
+$this->addSql(sql:'CREATE TABLE series (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name VARCHAR(255) NOT NULL)')COPIAR CÓDIGO
+A princípio, a migration está correta. Vamos adicionar, então, a descrição 'Criando a tabela de series e de messenger_messages' ao return da função getDescription():
+
+    {
+        return 'Criando a tabela de series e de messenger_messages';
+    }COPIAR CÓDIGO
+Fazendo isso, conseguiremos identificar a migration futuramente, caso necessário. Agora, vamos abrir o terminal novamente e, finalmente, executar o comando php bin/console doctrine:migrations:migrate. Depois da execução, precisaremos aceitar o aviso ao qual fomos apresentados durante o treinamento de Doctrine.
+
+Agora, o banco de dados está criado. Vamos executar php bin/console novamente para ver quais comandos do *Doctrine *estão à nossa disposição.
+
+Temos detalhes relacionados a cache, criação de bancos de dados, mapeamento e o doctrine:query:sql, que serve para rodar SQLs. No Doctrine puro, sem Symfony, esse comando recebe um nome diferente. Apesar disso, a funcionalidade é a mesma.
+
+Por isso, vamos executá-lo no nosso console, pegando os dados relacionados às séries:
+
+php bin/console doctrine:query:sql "SELECT * FROM series"COPIAR CÓDIGO
+Quando tentamos buscar, não recebemos nenhum erro como retorno, já que a tabela existe. Porém, nenhuma série é apresentada como retorno.
+
+No próximo vídeo, vamos utilizar efetivamente tudo que criamos até agora, inserir uma série e buscar por todas as séries do banco.
+
+@@06
+Usando o EntityManager
+
+Nesse capítulo, já criamos uma entidade de série, migrations, repositório de séries, configuramos o Doctrine e aprendemos a ler seus arquivos de configuração.
+Agora, vamos colocar todos esses aprendizados em prática. Vamos abrir o controller e usar o repositório para estender a classe ServiceEntityRepository.
+
+No controller, vamos solicitar dependências ao Symfony no início da classe, criando um construtor para SeriesRepository e o armazenando como uma propriedade:
+
+    public function__construct(private SeriesRepository $seriesRepository)COPIAR CÓDIGO
+Dessa forma, podemos acessar o repositório e executar todas as reposições que quisermos. O Symfony nos entregará uma instância do objeto SeriesRepository.
+
+Por isso, ele precisa que também estendamos a classe ServiceEntityRepository, para que, no construtor, possamos informar a qual classe o repositório pertence.
+
+Assim, o Symfony pode, internamente, executar getRepository() e passar a classe correta por parâmetro. Dessa maneira, a injeção de dependência é feita de maneira automática.
+
+Como criamos o SeriesRepository, podemos substituir o array com os nomes das séries em $seriesList por $this->seriesRepository->findAll():
+
+    $seriesList = $this->seriesRepository->findAll();COPIAR CÓDIGO
+Isso nos retornará outro array, mas nós poderíamos utilizar, nesse caso, uma collection do Doctrine sem problemas. Se houvesse algum relacionamento e tentássemos executar um for em uma collection, isso também funcionaria.
+
+Vamos acessar o form series/form.html.twig. Nele, enviamos uma requisição para a URL /series/create, mas utilizando o verbo post para enviar o nome, que ainda precisa ser cadastrado na série.
+
+De volta ao controller, vamos criar o método addSeries lidando com os dados da requisição e retornando, sempre, uma resposta:
+
+    public function addSeries(request $request): Response
+    {COPIAR CÓDIGO
+Nossa nova rota será igual à anterior, relacionada ao addSeriesForm. A única diferença será no método: ao invés de 'GET', vamos utilizar 'POST'. Também usaremos $request para pegar o $seriesName do formulário com input "name".
+
+Além disso, vamos criar nossa new Series, passando seu nome por parâmetro no construtor. Por fim, vamos usar o seriesRepository para adicionar a entidade $series e fazer o flush:
+
+#[Route('/series/create', methods: ['POST'])]
+public function addSeries(Request $request): Response
+{
+    $seriesName = $request->request->get(key: 'name');
+    $series = new Series($seriesName);
+
+    $this->seriesRepository->add($series, flush:true);
+    }COPIAR CÓDIGO
+O PhpStorm *adiciona *flush e key automaticamente, para facilitar nossa compreensão. Mas, se desejarmos, podemos nomear os parâmetros.
+
+Agora, precisamos retornar uma resposta. Quando o usuário inserir uma nova série, queremos redirecioná-lo para nossa lista. Vamos fazer isso inserindo uma RedirectResponse para /series ao retorno:
+
+#[Route('/series/create', methods: ['POST'])]
+public function addSeries(Request $request): Response
+{
+    $seriesName = $request->request->get(key: 'name');
+    $series = new Series($seriesName);
+
+    $this->seriesRepository->add($series, flush:true);
+    return new RedirectResponse(url:'/series');
+    }COPIAR CÓDIGO
+Vamos abrir a lista de séries no navegador. Quando atualizarmos a página, não haverá séries na lista. Clicando no botão de adicionar, seremos redirecionados para a página do formulário. Lá, vamos adicionar a série "Loki". Quando clicamos em "Adicionar", nos deparamos com o error handler do Symfony.
+
+A adição funcionou, mas o erro acontece porque tentamos exibir como string um objeto do tipo "série". Fazemos isso porque, no controller, em $seriesList estamos buscando um array de objetos desse tipo. E, na view, tentamos exibir o objeto.
+
+Portanto, agora precisamos acessar o "name". Vamos voltar para a view e entender esse detalhe do Twig. Dentro da classe list-group-item, não sabemos se {{ series.name }} acessa uma propriedade, chama um método ou se acessa a propriedade name de um array associativo.
+
+Não precisamos saber o que está acontecendo, porque todas essas funcionalidades são executadas pela mesma sintaxe no* Twig. Quando utilizamos {{ series.name }}, o *Twig tenta acessar $series['name'], $series->name, $series->name(), $series->getName(), $series->isName() e, por fim, $series->hasName().
+
+Caso ele não encontre nenhuma dessas opções, um erro será apresentado. No no nosso caso, o método getName existe. Quando executamos um "Ctrl + Clique" no PhpStorm, somos levados ao método correto. Veremos, então, ?string na função.
+
+Podemos remover ? do código, porque a string não pode ser nula nunca:
+
+public function getName(): stringCOPIAR CÓDIGO
+Teoricamente, o código está correto. Abrindo o navegador novamente, podemos atualizá-lo e ver que tudo deu certo. Podemos, inclusive, adicionar novas séries: é o que faremos com "Lost", que, ao ser adicionada, também será exibida pelo navegador.
+
+Para finalizar, podemos observar as* queries* executadas no profiler da barra na parte inferior da tela. Se clicarmos na última opção dela, seremos redirecionados para uma página que apresenta o select realizado. Aqui, também conseguimos verificar todos os acontecimentos da página.
+
+Podemos acessar, também, detalhes de redirecionamento da rota anterior clicando em "bfdb34". Fazendo isso, encontramos as queries executadas: a transação criada, a inserção da série e a finalização da transação.
+
+Agora, nosso cadastro de séries está ativo. Podemos, evidentemente, criar outras funcionalidades com o Symfony. Mas, nesse treinamento, vamos ficar por aqui.
+
+No último vídeo, vamos recapitular nossos aprendizados e saber um pouco mais sobre o que veremos nos próximos treinamentos.
+
+@@07
+Objetos no Twig
+
+Acompanhamos neste vídeo como podemos acessar dados de objetos em nossas views com Twig.
+O que o código {{ series.name }} tenta fazer na prática?
+
+Se $series for um array, ele tenta acessar a chave "name". Se for um objeto, ele tenta acessar a propriedade ou um getter.
+ 
+Esse pedaço de código vai tentar acessar, em ordem, o seguinte:
+$series['name'];
+$series->name;
+$series->name();
+$series->getName();
+$series->isName();
+$series->hasName();COPIAR CÓDIGO
+Alternativa correta
+Esse código tenta acessar diretamente a propriedade name do objeto $series.
+ 
+Alternativa correta
+Se $series for um array, ele tenta acessar a chave "name". Se for um objeto ele tenta acessar a propriedade diretamente.
+ 
+Há mais coisas que esse código tenta executar. Se a propriedade não existir ou não estiver acessível, há alguns métodos que ele tentará executar.
+
+@@08
+Faça como eu fiz
+
+Chegamos à parte de bancos de dados. Além de criar nossas entidades nós também definimos as configurações de conexão com o banco e também rodamos migrations.
+Chegou a hora de você colocar em prática o que vimos neste capítulo e implementar também essas alterações em seu código.
+
+Caso tenha dúvidas, confira o andamento do seu projeto clicando na Opinião do Instrutor.
+
+Na pasta do projeto, execute php bin/console make:entity Series para criar a entidade de série. Responda às perguntas do comando para definir a propriedade name na classe.
+Aproveite para adicionar os tipos nos atributos da entidade. Isso nos permite remover as informações de tipo dos atributos de mapeamento.
+Crie um construtor que recebe a propriedade name usando constructor property promotion.
+No arquivo .env descomente a linha DATABASE_URL="sqlite….
+Execute php bin/console doctrine:database:create para garantir que a conexão foi configurada corretamente. Veja se o arquivo foi criado.
+Para gerar as migrations execute php bin/console make:migration. Confira a migration criada.
+Execute php bin/console doctrine:migrations:migrate para executar a migration criada no passo anterior. Isso vai criar a tabela de séries no banco de dados.
+No controller de séries, receba no construtor um objeto do tipo SeriesRepository usando constructor property promotion.
+Ao invés de criar um array de nomes de séries, busque agora com $this->seriesRepository->findAll().
+Crie um novo método no controller para lidar com o formulário de criação de série. Ao final desse método, redirecione o usuário para a listagem de séries.
+No template de séries, ao invés de exibir {{ series }}, exiba {{ series.name }}.
+
+@@09
+Projeto final do curso
+
+Você pode baixar os códigos do curso neste link!
+
+https://github.com/alura-cursos/cursos-symfony/archive/refs/tags/aula-5.zip
+
+@@10
+O que aprendemos?
+
+Nessa aula, nós:
+Nos aprofundamos mais em detalhes do framework Symfony. Uma parte muito importante de qualquer ferramenta de desenvolvimento é configurá-la e nessa aula nós aprendemos justamente como funcionam as configurações do Symfony.
+Vimos que o Symfony já é integrado com Doctrine, um dos mais famosos ORMs do mundo PHP. Com isso todo o acesso a banco de dados fica muito facilitado.
+Falando de banco de dados, ao invés de configurar alguma infraestrutura, nós vimos que é possível criar um arquivo de banco de dados. Para isso nós usamos o SQLite.
+Agora falando sobre código, começamos a usar um pouco de injeção de dependência em nosso sistema.
+
+@@11
+Conclusão
+
+Parabéns por ter chegado ao fim do primeiro treinamento de Symfony!
+Vamos recapitular nossos aprendizados ao longo dessa caminhada. Antes de realmente utilizarmos o Symfony, nós entendemos o que é um framework PHP. Depois, instalamos o Symfony e aprendemos a criar uma rota.
+
+Criamos atributos no controller e, com eles, conseguimos definir rotas e parâmetros, além de aprender a filtrar métodos. Depois disso, lidamos com o request e aprendemos a devolver responses.
+
+Pegamos dados de formulário e retornamos respostas de redirecionamento. Depois de aprendemos a lidar com o controller, nos dedicamos à view. Utilizamos Twig *para devolver respostas já formatadas em *HTML, por exemplo, e entendemos como criar layouts com essa ferramenta.
+
+Depois, entramos mais a fundo na parte de front-end. Nessa etapa, usamos o Symfony Encore para configurar o webpack.
+
+Obs: Caso você não tenha familiaridade com webpacks, talvez o Encore tenha ficado confuso. Porém, caso você trabalhe com isso no futuro, entenderá suas aplicações mais facilmente.
+Depois de tudo isso, finalizamos o treinamento com a parte de model, criando o repositório de séries, com sua entidade feita automaticamente pelo Symfony direto na linha de comando.
+
+Com isso, desenvolvemos um sistema de cadastro de séries totalmente funcional. Podemos adicionar novas séries, como "Grey's Anatomy", por exemplo, e enviá-las para exibição na lista através do banco de dados.
+
+Ainda há muito para aprendermos. Porém, com esse treinamento, adquirimos uma boa base para trabalhar com o Symfony. Agora que já sabemos manipulá-lo e manipular o Doctrine, conseguimos adicionar relacionamentos. Podemos, por exemplo, adicionar registros de temporadas e episódios às séries.
+
+Agora já temos o conhecimento para fazê-lo. Em cursos futuros, vamos aplicar o que aprendemos para criar esses relacionamentos, melhorar validações e adicionar mensagens de sucesso para melhorar as habilidades do usuário.
+
+Atingimos nosso objetivo: desenvolver a base de um sistema MVC.
+
+Se tiver alguma dúvida, não hesite em deixar um comentário no fórum. A comunidade Alura, ou até mesmo o instrutor, terá prazer em responder à sua dúvida.
+
+Faça parte também do servidor da Alura no Discord. Lá, suas questões poderão ser respondidas mais rapidamente.
+
+Nossa jornada de Symfony continuará nos próximos treinamentos.
+
